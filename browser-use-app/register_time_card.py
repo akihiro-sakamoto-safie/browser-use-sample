@@ -11,14 +11,16 @@ from pydantic import BaseModel
 controller = Controller()
 
 
-class PostData(BaseModel):
+class PostSettings(BaseModel):
     webhook_url: str
     name: str = "坂本 明優"
 
 
-@controller.action("Slack通知", param_model=PostData)
-def post_to_webhook(params: PostData) -> None:
-    response = requests.post(params.webhook_url, json={"name": params.name})
+@controller.action("Slack通知", param_model=PostSettings)
+def post_to_webhook(post_settings: PostSettings) -> None:
+    response = requests.post(
+        post_settings.webhook_url, json={"name": post_settings.name}
+    )
 
     if response.status_code == 200:
         print("WebhookにPOSTしました。")
